@@ -15,7 +15,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => res.send("Backend running"));
 
-io.on("connnection", (socket) => {
+io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
   socket.on("disconnect", () => console.log("User disconnected:", socket.id));
 });
