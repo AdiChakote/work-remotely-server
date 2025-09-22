@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
+import WorkspaceRoutes from "./routes/workspaceRoutes.js";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ mongoose
   .catch((err) => console.log("MongoDB connection error:", err));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/workspaces", WorkspaceRoutes);
 
 app.get("/", (req, res) => res.send("Backend running"));
 
