@@ -13,7 +13,6 @@ const router = express.Router();
 router.post("/create", authMiddleware, createWorkspace);
 router.post("/join", authMiddleware, joinWorkspace);
 router.get("/", authMiddleware, getWorkspaces);
-
 router.delete("/delete/:workspaceId", authMiddleware, deleteWorkspace);
 router.post("/leave/:workspaceId", authMiddleware, leaveWorkspace);
 
