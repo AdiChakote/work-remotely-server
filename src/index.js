@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 import workspaceRoutes from "./routes/workspaceRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import taskBoardRoutes from "./routes/taskBoardRoutes.js";
-
+import documentRoutes from "./routes/documentRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -27,6 +27,7 @@ app.use((req, res, next) => {
 app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/taskboard", taskBoardRoutes);
+app.use("/api/documents", documentRoutes);
 
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
