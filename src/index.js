@@ -6,20 +6,27 @@ import dotenv from "dotenv";
 
 import workspaceRoutes from "./routes/workspaceRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import taskBoardRoutes from "./routes/taskBoardRoutes.js";
 
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 
-app.use(express.json());
-
-app.use("/api/workspaces", workspaceRoutes);
-app.use("/api/chats", chatRoutes);
-
 const io = new Server(server, {
   cors: { origin: "*" },
 });
+
+app.use(express.json());
+
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
+app.use("/api/workspaces", workspaceRoutes);
+app.use("/api/chats", chatRoutes);
+app.use("/api/taskboard", taskBoardRoutes);
 
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
@@ -35,7 +42,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (msg) => {
-    io.to(msg.workspace).emit("newMessage", msg);
+    if (msg?.workspace) {
+      io.to(msg.workspace).emit("newMessage", msg);
+    }
+  });
+
+  socket.on("taskUpdated", (payload) => {
+    if (payload?.workspaceId) {
+      io.to(payload.workspaceId).emit("taskUpdated", payload);
+    }
   });
 
   socket.on("disconnect", () => {
@@ -43,11 +58,11 @@ io.on("connection", (socket) => {
   });
 });
 
+const PORT = process.env.PORT || 4000;
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected");
-    const PORT = process.env.PORT || 4000;
     server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {
