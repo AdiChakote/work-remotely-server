@@ -10,6 +10,8 @@ import chatRoutes from "./routes/chatRoutes.js";
 import taskBoardRoutes from "./routes/taskBoardRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/userRoutes.js";
+import workspaceRoutes from "./routes/workspaceRoutes.js";
 
 dotenv.config();
 
@@ -46,6 +48,7 @@ app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/taskboard", taskBoardRoutes);
 app.use("/api/documents", documentRoutes);
+app.use("/api/users", userRoutes);
 
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
