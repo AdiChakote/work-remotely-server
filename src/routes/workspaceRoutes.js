@@ -3,8 +3,7 @@ import upload from "../middleware/upload.js";
 import cloudinary from "../config/cloudinary.js";
 import Workspace from "../models/Workspace.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-
-const router = express.Router();
+import { sendInviteEmail } from "../utils/email.js"; // ✅ import added
 
 import {
   createWorkspace,
@@ -13,6 +12,8 @@ import {
   deleteWorkspace,
   leaveWorkspace,
 } from "../controllers/workspaceController.js";
+
+const router = express.Router();
 
 // Regular workspace routes
 router.post("/create", authMiddleware, createWorkspace);
@@ -57,5 +58,18 @@ router.post(
     }
   }
 );
+
+// ✅ Workspace invite route
+router.post("/:id/invite", authMiddleware, async (req, res) => {
+  const { email } = req.body;
+  const inviteLink = `http://localhost:3000/workspace/${req.params.id}/join`;
+
+  try {
+    await sendInviteEmail(email, "Workspace", inviteLink);
+    res.json({ success: true, message: "Invite sent" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 export default router;
